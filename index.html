@@ -2,8 +2,8 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>悠茶重工内部导航</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>macOS风格窗口</title>
     <style>
         /* 基础样式和字体 */
         @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600&display=swap');
@@ -121,6 +121,7 @@
         .window-titlebar {
             height: 52px;
             background-color: rgba(var(--macos-primary), 0.5);
+            min-width: 0; /* 不要冒出来好吗好的 */
             display: flex;
             align-items: center;
             padding: 0 15px;
@@ -449,6 +450,50 @@
 
         .global-logo-button:hover img {
             transform: scale(1.1);
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+        .page-wrapper {
+            padding: 10px;
+        }
+        
+        .search-window,
+        .macos-window {
+            width: 100%;
+            max-width: 100%;
+            border-radius: 0;
+        }
+        
+        .window-titlebar {
+            padding: 0 10px;
+        }
+        
+        .window-controls {
+            gap: 6px;
+        }
+        
+        .control-btn {
+            width: 10px;
+            height: 10px;
+        }
+        
+        .window-title {
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .search-container,
+        .window-content {
+            padding: 15px;
+        }
+        
+        .quick-links {
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+        }
         }
     </style>
     <!-- 使用Font Awesome图标 -->
