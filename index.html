@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>macOS风格窗口</title>
+    <style>
+        /* 基础样式和字体 */
+        @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=SF+Mono:wght@400;500&display=swap');
+        
+        :root {
+            --macos-primary: 28, 28, 30;
+            --macos-secondary: 44, 44, 46;
+            --macos-tertiary: 58, 58, 60;
+            --macos-text: 242, 242, 247;
+            --macos-subtext: 174, 174, 178;
+            --macos-accent: 10, 132, 255;
+            --macos-red: 255, 69, 58;
+            --macos-yellow: 255, 214, 10;
+            --macos-green: 48, 209, 88;
+            
+            --window-radius: 10px;
+            --window-blur: 15px;
+            --window-opacity: 0.85;
+            --window-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            
+            --header-font: "SF Pro Display", -apple-system, sans-serif;
+            --mono-font: "SF Mono", monospace;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--header-font);
+            color: rgb(var(--macos-text));
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 背景图片 */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('./bg.png') no-repeat center center;
+            background-size: cover;
+            z-index: -2;
+        }
+        
+        /* 背景模糊层 */
+        body::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            background-size: cover;
+            filter: blur(10px);
+            z-index: -1;
+            opacity: 0.7;
+        }
+        
+        /* macOS窗口容器 */
+        .macos-window {
+            width: 100%;
+            max-width: 800px;
+            min-height: 500px;
+            border-radius: var(--window-radius);
+            overflow: hidden;
+            box-shadow: var(--window-shadow);
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(var(--macos-secondary), var(--window-opacity));
+            border: 1px solid rgba(var(--macos-text), 0.1);
+            backdrop-filter: blur(var(--window-blur));
+            -webkit-backdrop-filter: blur(var(--window-blur));
+        }
+        
+        /* 窗口标题栏 */
+        .window-titlebar {
+            height: 52px;
+            background-color: rgba(var(--macos-primary), 0.5);
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            border-bottom: 1px solid rgba(var(--macos-text), 0.05);
+            position: relative;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        
+        /* 窗口控制按钮 */
+        .window-controls {
+            display: flex;
+            gap: 8px;
+            position: absolute;
+            left: 15px;
+        }
+        
+        .control-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: none;
+        }
+        
+        .close-btn {
+            background-color: rgb(var(--macos-red));
+        }
+        
+        .minimize-btn {
+            background-color: rgb(var(--macos-yellow));
+        }
+        
+        .maximize-btn {
+            background-color: rgb(var(--macos-green));
+        }
+        
+        /* 窗口标题 */
+        .window-title {
+            flex: 1;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(var(--macos-text), 0.8);
+        }
+        
+        /* 窗口内容区域 */
+        .window-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+        
+        /* 内容卡片 */
+        .content-card {
+            background-color: rgba(var(--macos-primary), 0.4);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(var(--macos-text), 0.05);
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: rgb(var(--macos-text));
+        }
+        
+        .card-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: rgba(var(--macos-text), 0.8);
+            margin-bottom: 15px;
+        }
+        
+        /* 代码块 */
+        .code-block {
+            font-family: var(--mono-font);
+            background-color: rgba(var(--macos-primary), 0.6);
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 13px;
+            overflow-x: auto;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        
+        /* 按钮 */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background-color: rgb(var(--macos-accent));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: rgba(var(--macos-accent), 0.8);
+        }
+        
+        .btn-secondary {
+            background-color: rgba(var(--macos-text), 0.1);
+            color: rgb(var(--macos-text));
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(var(--macos-text), 0.2);
+        }
+        
+        /* 窗口底部状态栏 */
+        .window-statusbar {
+            height: 28px;
+            background-color: rgba(var(--macos-primary), 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            font-size: 12px;
+            color: rgba(var(--macos-text), 0.6);
+            border-top: 1px solid rgba(var(--macos-text), 0.05);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+    </style>
+    <!-- 使用Font Awesome图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="macos-window">
+        <div class="window-titlebar">
+            <div class="window-controls">
+                <button class="control-btn close-btn"></button>
+                <button class="control-btn minimize-btn"></button>
+                <button class="control-btn maximize-btn"></button>
+            </div>
+            <div class="window-title">我的应用程序</div>
+        </div>
+        
+        <div class="window-content">
+            <div class="content-card">
+                <h2 class="card-title">欢迎使用macOS风格应用</h2>
+                <p class="card-text">这是一个模仿macOS风格的HTML/CSS实现，包含了半透明窗口、毛玻璃效果和macOS风格的UI元素。</p>
+                <div class="code-block">
+                    <pre>// 示例代码
+function helloWorld() {
+    console.log("Hello, macOS!");
+}</pre>
+                </div>
+                <button class="btn btn-primary">主要按钮</button>
+                <button class="btn btn-secondary">次要按钮</button>
+            </div>
+            
+            <div class="content-card">
+                <h2 class="card-title">毛玻璃效果</h2>
+                <p class="card-text">这个窗口使用了CSS的backdrop-filter属性来实现macOS Big Sur引入的毛玻璃效果。背景会模糊显示，同时保持内容的可读性。</p>
+                <p class="card-text">窗口的透明度可以通过调整CSS变量来控制，以适应不同的使用场景。</p>
+            </div>
+        </div>
+        
+        <div class="window-statusbar">
+            <div>就绪</div>
+            <div>macOS风格</div>
+        </div>
+    </div>
+</body>
+</html>
