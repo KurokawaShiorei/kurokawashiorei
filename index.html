@@ -29,28 +29,17 @@
             --mono-font: "SF Mono", monospace;
         }
         
-        * {
+        html, body {
+            height: 100%;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            overflow: auto;
         }
-        
-        body {
-            font-family: var(--header-font);
-            color: rgb(var(--macos-text));
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-        
+
         /* 背景图片 */
         body::before {
             content: "";
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -63,7 +52,7 @@
         /* 背景模糊层 */
         body::after {
             content: "";
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -73,6 +62,43 @@
             filter: blur(10px);
             z-index: -1;
             opacity: 0.7;
+        }
+
+        /* 主容器 */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* 内容容器 */
+        .content-container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        /* 搜索窗口 */
+        .search-window {
+            width: 100%;
+            max-width: 800px;
+            min-height: 200px;
+            max-height: 80vh;
+            border-radius: var(--window-radius);
+            overflow: hidden;
+            box-shadow: var(--window-shadow);
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(var(--macos-secondary), var(--window-opacity));
+            border: 1px solid rgba(var(--macos-text), 0.1);
+            backdrop-filter: blur(var(--window-blur));
+            -webkit-backdrop-filter: blur(var(--window-blur));
         }
         
         /* macOS窗口容器 */
@@ -140,11 +166,119 @@
             color: rgba(var(--macos-text), 0.8);
         }
         
+        /* 窗口右上角logo */
+        .window-logo {
+            position: absolute;
+            right: 15px;
+            height: 24px;
+            width: auto;
+            aspect-ratio: 1/1;
+            object-fit: contain;
+        }
+        
         /* 窗口内容区域 */
         .window-content {
             flex: 1;
             padding: 30px;
             overflow-y: auto;
+            scrollbar-gutter: stable;
+        }
+        
+        /* 搜索区域 */
+        .search-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 30px;
+            overflow-y: auto;
+            flex: 1;
+            min-height: 0;
+        }
+        
+        /* 搜索框 */
+        .search-box {
+            display: flex;
+            align-items: center;
+            background-color: rgba(var(--macos-primary), 0.4);
+            border-radius: 30px;
+            padding: 10px 20px;
+            border: 1px solid rgba(var(--macos-text), 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .search-box:focus-within {
+            border-color: rgba(var(--macos-accent), 0.5);
+            box-shadow: 0 0 0 3px rgba(var(--macos-accent), 0.2);
+        }
+        
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: rgb(var(--macos-text));
+            font-size: 16px;
+            padding: 5px 10px;
+            font-family: var(--header-font);
+        }
+        
+        .search-input::placeholder {
+            color: rgba(var(--macos-text), 0.5);
+        }
+        
+        .search-button {
+            background: transparent;
+            border: none;
+            color: rgba(var(--macos-text), 0.7);
+            cursor: pointer;
+            padding: 5px;
+            transition: all 0.2s;
+        }
+        
+        .search-button:hover {
+            color: rgb(var(--macos-text));
+        }
+        
+        /* 常用网站 */
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 15px;
+            grid-auto-rows: min-content;
+        }
+
+        .quick-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: rgba(var(--macos-text), 0.8);
+            transition: all 0.2s;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .quick-link:hover {
+            background-color: rgba(var(--macos-accent), 0.2);
+            color: rgb(var(--macos-text));
+            transform: translateY(-2px);
+        }
+        
+        .quick-link-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(var(--macos-primary), 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .quick-link-label {
+            font-size: 12px;
+            text-align: center;
         }
         
         /* 内容卡片 */
@@ -228,46 +362,280 @@
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
         }
+        
+        /* 滚动条样式 - 全局 */
+        ::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background-color: rgba(var(--macos-primary), 0.1);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: rgba(var(--macos-text), 0.3);
+            border-radius: 10px;
+            border: 3px solid transparent;
+            background-clip: content-box;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(var(--macos-text), 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb:active {
+            background-color: rgba(var(--macos-accent), 0.7);
+        }
+
+        ::-webkit-scrollbar-corner {
+            background-color: transparent;
+        }
+
+        /* 窗口内滚动条 */
+        .window-content::-webkit-scrollbar,
+        .search-container::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .window-content::-webkit-scrollbar-thumb,
+        .search-container::-webkit-scrollbar-thumb {
+            background-color: rgba(var(--macos-text), 0.2);
+        }
+
+        /* 全局跳转回cete按钮 */
+        .global-logo-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .global-logo-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background-color: rgba(var(--macos-primary), 0.3);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(var(--macos-text), 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+        }
+
+        .global-logo-button:hover {
+            background-color: rgba(var(--macos-primary), 0.5);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .global-logo-button:active {
+            transform: translateY(0) scale(0.95);
+        }
+
+        .global-logo-button img {
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+            filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
+            transition: all 0.2s ease;
+        }
+
+        .global-logo-button:hover img {
+            transform: scale(1.1);
+        }
     </style>
     <!-- 使用Font Awesome图标 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="macos-window">
-        <div class="window-titlebar">
-            <div class="window-controls">
-                <button class="control-btn close-btn"></button>
-                <button class="control-btn minimize-btn"></button>
-                <button class="control-btn maximize-btn"></button>
-            </div>
-            <div class="window-title">我的应用程序</div>
-        </div>
-        
-        <div class="window-content">
-            <div class="content-card">
-                <h2 class="card-title">欢迎使用macOS风格应用</h2>
-                <p class="card-text">这是一个模仿macOS风格的HTML/CSS实现，包含了半透明窗口、毛玻璃效果和macOS风格的UI元素。</p>
-                <div class="code-block">
-                    <pre>// 示例代码
-function helloWorld() {
-    console.log("Hello, macOS!");
-}</pre>
+    <div class="global-logo-container">
+        <a href="https://ceteaonia.top" class="global-logo-button" target="_blank">
+            <img src="./logo.png" alt="Ceteaonia Logo">
+        </a>
+    </div>
+
+    <div class="main-container">
+        <div class="content-container">
+            <!-- 搜索窗口 -->
+            <div class="search-window">
+                <div class="window-titlebar">
+                    <div class="window-controls">
+                        <button class="control-btn close-btn"></button>
+                        <button class="control-btn minimize-btn"></button>
+                        <button class="control-btn maximize-btn"></button>
+                    </div>
+                    <div class="window-title">使用互联网搜索</div>
                 </div>
-                <button class="btn btn-primary">主要按钮</button>
-                <button class="btn btn-secondary">次要按钮</button>
+                
+                <div class="search-container">
+                    <div class="search-box">
+                        <input type="text" class="search-input" placeholder="报我楼成秋望月，把君诗读夜回灯。" id="searchInput">
+                        <button class="search-button" id="searchButton">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="quick-links">
+                        <a href="https://www.apple.com" class="quick-link" target="_blank">
+                            <div class="quick-link-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                            <div class="quick-link-label">Apple</div>
+                        </a>
+                        <a href="https://www.apple.com" class="quick-link" target="_blank">
+                            <div class="quick-link-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                            <div class="quick-link-label">Apple</div>
+                        </a>
+                        <a href="https://www.apple.com" class="quick-link" target="_blank">
+                            <div class="quick-link-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                            <div class="quick-link-label">Apple</div>
+                        </a>
+                        <a href="https://www.apple.com" class="quick-link" target="_blank">
+                            <div class="quick-link-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                            <div class="quick-link-label">Apple</div>
+                        </a>
+                        <a href="https://www.apple.com" class="quick-link" target="_blank">
+                            <div class="quick-link-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                            <div class="quick-link-label">Apple</div>
+                        </a>
+                        <a href="https://www.apple.com" class="quick-link" target="_blank">
+                            <div class="quick-link-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                            <div class="quick-link-label">Apple</div>
+                        </a>
+                        <a href="https://www.apple.com" class="quick-link" target="_blank">
+                            <div class="quick-link-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                            <div class="quick-link-label">Apple</div>
+                        </a>
+                        <a href="https://www.apple.com" class="quick-link" target="_blank">
+                            <div class="quick-link-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                            <div class="quick-link-label">Apple</div>
+                        </a>
+                        <a href="https://www.apple.com" class="quick-link" target="_blank">
+                            <div class="quick-link-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                            <div class="quick-link-label">Apple</div>
+                        </a>
+                        <a href="https://www.apple.com" class="quick-link" target="_blank">
+                            <div class="quick-link-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                            <div class="quick-link-label">Apple</div>
+                        </a>
+                        <a href="https://www.apple.com" class="quick-link" target="_blank">
+                            <div class="quick-link-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                            <div class="quick-link-label">Apple</div>
+                        </a>
+                        <a href="https://www.apple.com" class="quick-link" target="_blank">
+                            <div class="quick-link-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                            <div class="quick-link-label">Apple</div>
+                        </a>
+                        <a href="https://www.apple.com" class="quick-link" target="_blank">
+                            <div class="quick-link-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                            <div class="quick-link-label">Apple</div>
+                        </a>
+                        <a href="https://www.apple.com" class="quick-link" target="_blank">
+                            <div class="quick-link-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                            <div class="quick-link-label">Apple</div>
+                        </a>
+                        <a href="https://www.apple.com" class="quick-link" target="_blank">
+                            <div class="quick-link-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                            <div class="quick-link-label">Apple</div>
+                        </a>
+                        <a href="https://www.apple.com" class="quick-link" target="_blank">
+                            <div class="quick-link-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                            <div class="quick-link-label">Apple</div>
+                        </a>
+                        <a href="https://www.apple.com" class="quick-link" target="_blank">
+                            <div class="quick-link-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                            <div class="quick-link-label">Apple</div>
+                        </a>
+                    </div>
+                </div>
             </div>
             
-            <div class="content-card">
-                <h2 class="card-title">毛玻璃效果</h2>
-                <p class="card-text">这个窗口使用了CSS的backdrop-filter属性来实现macOS Big Sur引入的毛玻璃效果。背景会模糊显示，同时保持内容的可读性。</p>
-                <p class="card-text">窗口的透明度可以通过调整CSS变量来控制，以适应不同的使用场景。</p>
+            <!-- 主窗口 -->
+            <div class="macos-window">
+                <div class="window-titlebar">
+                    <div class="window-controls">
+                        <button class="control-btn close-btn"></button>
+                        <button class="control-btn minimize-btn"></button>
+                        <button class="control-btn maximize-btn"></button>
+                    </div>
+                    <div class="window-title">悠茶重工承建</div>
+                </div>
+                
+                <div class="window-content">
+                    <div class="content-card">
+                        <p class="card-text">欸，真的有什么好说的吗？这个导航页除了我之外应该没有人能够看得见吧？</p>
+                        <p class="card-text">这个导航页的一部分已经可以使用！但它仍在施工。</p>
+                    </div>
+
+                    <div class="content-card">
+                        <p class="card-text">我会一直盯着你，直到永远，永远</p>
+                        <p class="card-text">这个导航页的一部分已经可以使用！但它仍在施工。</p>
+                        <p class="card-text">这个导航页的一部分已经可以使用！但它仍在施工。</p>
+                    </div>
+                </div>
+                
+                <div class="window-statusbar">
+                    <div>Ceteaonia©2015-2025 KurokawaShiorei</div>
+                    <div>All Rights Reserved by SereniLeafy Corp.​​</div>
+                </div>
             </div>
         </div>
-        
-        <div class="window-statusbar">
-            <div>就绪</div>
-            <div>macOS风格</div>
-        </div>
     </div>
+
+    <script>
+        // 搜索功能
+        document.getElementById('searchButton').addEventListener('click', performSearch);
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+        
+        function performSearch() {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            if (searchTerm) {
+                window.open(`https://www.bing.com/search?q=${encodeURIComponent(searchTerm)}`, '_blank');
+            }
+        }
+    </script>
 </body>
 </html>
