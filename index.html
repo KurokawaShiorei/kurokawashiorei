@@ -64,6 +64,18 @@
             opacity: 0.7;
         }
 
+        /* 针对 iOS Safari 的特殊修复 */
+        @supports (-webkit-touch-callout: none) {
+            .window-controls {
+                gap: 9px !important; /* iOS 需要更大的间隙 */
+            }
+            .control-btn {
+                width: 13px !important;
+                height: 13px !important;
+                -webkit-appearance: none; /* 移除 iOS 默认样式 */
+            }
+        }
+
         /* 主容器 */
         .main-container {
             display: flex;
@@ -134,32 +146,70 @@
         /* 窗口控制按钮 */
         .window-controls {
             display: flex;
-            gap: 8px;
             position: absolute;
             left: 15px;
-            flex-shrink: 0; /*防止按钮被压缩 */
+            /* 防变形核心代码 */
+            flex: 0 0 auto;
+            width: auto;
+            height: auto;
+            padding: 5px;
+            align-items: center;
+            border-radius: 15px;
+            display: flex;
+            position: absolute;
+            left: 15px;
+            gap: 10px; /* 加大间距 */
+            pointer-events: none; /* 禁用容器交互 */
         }
+        
         
         .control-btn {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            border: none;
-            min-width: 12px; /*确保最小尺寸 */
-            min-height: 12px; /*确保最小尺寸 */
-            flex-shrink: 0;
+            /* 强制圆形锁定 */
+            width: 14px !important;
+            height: 14px !important;
+            min-width: 14px !important;
+            min-height: 14px !important;
+            border-radius: 50% !important;
+            /* 消除所有可能影响的因素 */
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            line-height: 0 !important;
+            /* 恢复交互 */
+            pointer-events: auto;
+            /* 视觉强化 */
+            box-shadow: 
+                0 1px 3px rgba(0,0,0,0.2),
+                inset 0 1px 1px rgba(255,255,255,0.1);
+            /* 禁用文本选择 */
+            user-select: none;
+            -webkit-user-select: none;
         }
-        
-        .close-btn {
-            background-color: rgb(var(--macos-red));
+
+        /* 鼠标悬停立体效果 */
+        .control-btn:hover {
+            transform: scale(1.1);
+            opacity: 0.9;
         }
-        
-        .minimize-btn {
-            background-color: rgb(var(--macos-yellow));
+  
+        /* 按钮颜色 (保持macOS原生色调) */
+        .close-btn { 
+            background: #ff5f56;
+            border: 0.5px solid #e24640;
         }
-        
-        .maximize-btn {
-            background-color: rgb(var(--macos-green));
+        .minimize-btn { 
+            background: #ffbd2e;
+            border: 0.5px solid #e6a01c;
+        }
+        .maximize-btn { 
+            background: #27c93f;
+            border: 0.5px solid #12ac28;
+        }
+
+        /* 按钮按下效果 */
+        .control-btn:active {
+            transform: scale(0.95);
+            filter: brightness(0.9);
         }
         
         /* 窗口标题 */
@@ -465,13 +515,32 @@
         }
 
         /* 移动端适配 */
+        /* 移动端适配 */
         @media (max-width: 768px) {
-
-        :root {
-        --window-radius: 10px; /* 保持圆角 */
+            .window-controls {
+                gap: 7px;
+                left: 12px;
+            }
+            .control-btn {
+                width: 11px;
+                height: 11px;
+            }
         }
-        .page-wrapper {
-            padding: 10px;
+
+        @media (max-width: 480px) {
+            .window-controls {
+                gap: 10px;
+                left: 12px;
+            }
+            .control-btn {
+                width: 14px;
+                height: 14px;
+                /* 按压效果 */
+                transition: transform 0.1s;
+            }
+            .control-btn:active {
+                transform: scale(0.9);
+            }
         }
         
         .search-window,
@@ -515,6 +584,11 @@
         font-size: 11px; /* 稍小的字体 */
         }
         }
+
+        .close-btn { background: #ff5f56 !important; }
+        .minimize-btn { background: #ffbd2e !important; }
+        .maximize-btn { background: #27c93f !important; }
+
     </style>
     <!-- 使用Font Awesome图标 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -536,7 +610,7 @@
                         <button class="control-btn minimize-btn"></button>
                         <button class="control-btn maximize-btn"></button>
                     </div>
-                    <div class="window-title">使用互联网搜索</div>
+                    <div class="window-title"><b><h3>使用互联网搜索</h3></b></div>
                 </div>
                 
                 <div class="search-container">
@@ -662,7 +736,7 @@
                         <button class="control-btn minimize-btn"></button>
                         <button class="control-btn maximize-btn"></button>
                     </div>
-                    <div class="window-title">悠茶重工承建</div>
+                    <div class="window-title"><b><h3>悠茶重工承建</h3></b></div>
                 </div>
                 
                 <div class="window-content">
